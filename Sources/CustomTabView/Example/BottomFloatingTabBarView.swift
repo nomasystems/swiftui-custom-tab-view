@@ -7,14 +7,13 @@
 
 import SwiftUI
 
-@available(macOS 11.0, *)
 struct BottomFloatingTabBarView: View {
-    @Binding var selection: Tab
-    let onTabSelection: (Tab) -> Void
-    
+    @Binding var selection: ExampleTab
+    let onTabSelection: (ExampleTab) -> Void
+
     var body: some View {
         HStack {
-            ForEach(Tab.allCases, id: \.self) { tab in
+            ForEach(ExampleTab.allCases, id: \.self) { tab in
                 tabBarItem(for: tab)
                     .frame(maxWidth: .infinity)
                     .contentShape(Rectangle())
@@ -25,16 +24,18 @@ struct BottomFloatingTabBarView: View {
             }
         }
         #if canImport(UIKit)
-        .background(
-            VisualEffectView(effect: UIBlurEffect(style: .systemThinMaterial))
-        )
+        .background(alignment: .bottom) {
+            Color.green.background(
+                VisualEffectView(effect: UIBlurEffect(style: .systemThinMaterial))
+            )
+        }
         #endif
         .clipShape(RoundedRectangle(cornerRadius: 25))
+        .anchorPreference(key: TabBarBoundsForSafeAreaKey.self, value: .bounds, transform: { $0 })
         .shadow(color: .secondary.opacity(0.3), radius: 10, y: 5)
-        .padding(.horizontal)
     }
     
-    private func tabBarItem(for tab: Tab) -> some View {
+    private func tabBarItem(for tab: ExampleTab) -> some View {
         VStack(spacing: 0) {
             tab.image
                 .resizable()
@@ -66,13 +67,8 @@ struct VisualEffectView: UIViewRepresentable {
 }
 #endif
 
-@available(iOS 13.0, macOS 11.0, *)
 struct BottomFloatingTabBarView_Previews: PreviewProvider {
     static var previews: some View {
-        if #available(macOS 11.0, iOS 14.0, *) {
-            BottomFloatingTabBarView(selection: .constant(.home)) { _ in }
-        } else {
-            Text("")
-        }
+        BottomFloatingTabBarView(selection: .constant(.home)) { _ in }
     }
 }

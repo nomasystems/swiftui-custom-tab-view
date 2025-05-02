@@ -1,5 +1,5 @@
 //
-//  Tab.swift
+//  ExampleTab.swift
 //
 //
 //  Created by Niccolò Fontana on 07/11/23.
@@ -7,8 +7,7 @@
 
 import SwiftUI
 
-@available(iOS 13.0, macOS 11.0, *)
-enum Tab: String, Hashable, CaseIterable {
+enum ExampleTab: String, Hashable, CaseIterable {
     case home, explore, favourites, other
 
     var index: Int {

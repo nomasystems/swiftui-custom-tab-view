@@ -7,34 +7,43 @@
 
 import SwiftUI
 
-@available(iOS 13.0, macOS 11.0, *)
 struct ExampleView: View {
-    @State private var selectedTab: Tab = .home
-    
+    @State private var selectedTab: ExampleTab = .home
+
     private var tabBarView: some View {
         BottomFloatingTabBarView(selection: $selectedTab, onTabSelection: { tab in
             print("Maybe send some analytics here")
         })
-        #if os(iOS)
-        .padding(.bottom, 32)
-        #endif
     }
-    
+
     var body: some View {
-        CustomTabView(tabBarView: tabBarView, tabs: Tab.allCases, selection: selectedTab) {
+        CustomTabView(tabBarView: tabBarView, tabs: ExampleTab.allCases, selection: selectedTab) {
             #if os(iOS)
             NavigationView {
-                Text("Home")
-                    .navigationBarTitle("Home")
+                ScrollView {
+                    ZStack {
+                        Color.clear
+                        Text("Home")
+                            .padding(.top, 100)
+                    }
+                }
+                .background(Color.brown)
+                .navigationTitle("Home")
             }
             #else
                 Text("Home")
             #endif
-            
+
             NavigationView {
                 List {
                     ForEach((0..<20).map { $0 }, id: \.self) { item in
-                        NavigationLink(destination: Text("Destination \(item)")) {
+                        NavigationLink(
+                            destination: ZStack {
+                                Color.red.ignoresSafeArea(.all)
+                                Text("Destination \(item)")
+                                    .tabBarVisibility(.hidden)
+                            }
+                        ) {
                             Text("Go to \(item)")
                         }
                     }
@@ -43,8 +52,7 @@ struct ExampleView: View {
                 .navigationBarTitle("Explore")
                 #endif
             }
-            .edgesIgnoringSafeArea(.vertical)
-            
+
             #if os(iOS)
             NavigationView {
                 Text("Favourites")
@@ -53,7 +61,7 @@ struct ExampleView: View {
             #else
                 Text("Favourites")
             #endif
-            
+
             #if os(iOS)
             NavigationView {
                 Text("Other")
@@ -63,15 +71,13 @@ struct ExampleView: View {
                 Text("Other")
             #endif
         }
-        .edgesIgnoringSafeArea(.vertical)
         #if os(iOS)
-        .tabBarPosition(.floating(.bottom))
+        .tabBarEdge(.bottom)
         .navigationViewStyle(.stack)
         #endif
     }
 }
 
-@available(iOS 13.0, macOS 11.0, *)
 struct ExampleView_Previews: PreviewProvider {
     static var previews: some View {
         ExampleView()

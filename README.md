@@ -4,8 +4,8 @@
 
 # SwiftUI CustomTabView
 
-![Language](https://img.shields.io/badge/Swift-5-orange?logo=Swift&logoColor=white)
-![Platforms](https://img.shields.io/badge/Platforms-iOS%2013+,%20macOS%2010.15+-white?labelColor=gray&style=flat)
+![Language](https://img.shields.io/badge/Swift-6-orange?logo=Swift&logoColor=white)
+![Platforms](https://img.shields.io/badge/Platforms-iOS%2015+,%20macOS%2012+-white?labelColor=gray&style=flat)
 ![License](https://img.shields.io/badge/License-MIT-white?labelColor=blue&style=flat)
 
 </div>

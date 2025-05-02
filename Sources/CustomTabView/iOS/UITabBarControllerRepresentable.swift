@@ -9,14 +9,24 @@
 import SwiftUI
 import UIKit
 
-@available(iOS 13.0, *)
-struct UITabBarControllerRepresentable: UIViewControllerRepresentable {
+struct UITabBarControllerRepresentable<Subviews>: UIViewControllerRepresentable where Subviews: RandomAccessCollection, Subviews.Element: View & Identifiable, Subviews.Index == Int {
     let selectedTabIndex: Int
-    let controlledViews: [UIViewController]
-    
+    @Binding var tabBarVisibility: [Int: TabBarVisibility]
+    let controlledViews: Subviews
+    let additionalSafeAreaInsets: EdgeInsets
+    let additionalSafeAreaInsetsTabBarVisible: EdgeInsets
+
     func makeUIViewController(context: Context) -> UITabBarController {
         let tabBarController = UITabBarController()
-        tabBarController.setViewControllers(controlledViews, animated: false)
+        tabBarController.setViewControllers(
+            controlledViews.enumerated().map { index, view in
+                UIHostingController(
+                    rootView: view
+                        .onPreferenceChange(TabBarVisibilityKey.self) { tabBarVisibility[index] = $0 }
+                )
+            },
+            animated: false
+        )
         tabBarController.selectedIndex = selectedTabIndex
         tabBarController.tabBar.isHidden = true
         if #available(iOS 18.0, *) {
@@ -27,13 +37,20 @@ struct UITabBarControllerRepresentable: UIViewControllerRepresentable {
     
     func updateUIViewController(_ tabBarController: UITabBarController, context: Context) {
         tabBarController.selectedIndex = selectedTabIndex
+        tabBarController.viewControllers?.enumerated().forEach { index, vc in
+            (vc as? UIHostingController)?.rootView = controlledViews[index]
+                .onPreferenceChange(TabBarVisibilityKey.self) { tabBarVisibility[index] = $0 }
+            let additionalSafeAreaInsets = tabBarVisibility[index] == .visible
+                ? additionalSafeAreaInsetsTabBarVisible
+                : self.additionalSafeAreaInsets
+            vc.additionalSafeAreaInsets = .init(
+                top: additionalSafeAreaInsets.top,
+                left: additionalSafeAreaInsets.leading,
+                bottom: additionalSafeAreaInsets.bottom,
+                right: additionalSafeAreaInsets.trailing
+            )
+        }
     }
 }
 
-@available(iOS 13.0, *)
-struct TabBarController_Previews: PreviewProvider {
-    static var previews: some View {
-        UITabBarControllerRepresentable(selectedTabIndex: 0, controlledViews: [])
-    }
-}
 #endif

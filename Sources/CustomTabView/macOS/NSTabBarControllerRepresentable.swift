@@ -9,7 +9,6 @@
 import SwiftUI
 import AppKit
 
-@available(macOS 10.15, *)
 struct NSTabViewControllerRepresentable: NSViewControllerRepresentable {
     let selectedTabIndex: Int
     let controlledViews: [NSViewController]
@@ -27,7 +26,6 @@ struct NSTabViewControllerRepresentable: NSViewControllerRepresentable {
     }
 }
 
-@available(macOS 10.15, *)
 struct NSTabViewControllerRepresentable_Previews: PreviewProvider {
     static var previews: some View {
         NSTabViewControllerRepresentable(selectedTabIndex: 0, controlledViews: [])

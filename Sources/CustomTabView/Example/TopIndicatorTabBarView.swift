@@ -7,11 +7,10 @@
 
 import SwiftUI
 
-@available(iOS 13.0, macOS 11.0, *)
 struct TopIndicatorTabBarView: View {
-    @Binding var selection: Tab
-    let onTabSelection: (Tab) -> Void
-    
+    @Binding var selection: ExampleTab
+    let onTabSelection: (ExampleTab) -> Void
+
     @State private var tabItemsWidth: CGFloat = 0
 
     var body: some View {
@@ -20,7 +19,7 @@ struct TopIndicatorTabBarView: View {
 
             ZStack(alignment: .top) {
                 HStack(spacing: 0) {
-                    ForEach(Tab.allCases, id: \.self) { tab in
+                    ForEach(ExampleTab.allCases, id: \.self) { tab in
                         tabBarItem(for: tab)
                             .frame(maxWidth: .infinity)
                             .contentShape(Rectangle())
@@ -31,7 +30,7 @@ struct TopIndicatorTabBarView: View {
                     }
                 }
                 .readSize { size in
-                    tabItemsWidth = size.width / CGFloat(Tab.allCases.count)
+                    tabItemsWidth = size.width / CGFloat(ExampleTab.allCases.count)
                 }
 
                 HStack(spacing: 0) {
@@ -57,7 +56,7 @@ struct TopIndicatorTabBarView: View {
         tabItemsWidth * CGFloat(selection.index)
     }
 
-    private func tabBarItem(for tab: Tab) -> some View {
+    private func tabBarItem(for tab: ExampleTab) -> some View {
         VStack(spacing: 0) {
             tab.image
                 .resizable()
@@ -80,7 +79,7 @@ struct TopIndicatorTabBarView: View {
 // MARK: - View + Size reading utility
 
 struct SizePreferenceKey: PreferenceKey {
-    static var defaultValue: CGSize = .zero
+    static var defaultValue: CGSize { .zero }
     static func reduce(value: inout CGSize, nextValue: () -> CGSize) {}
 }
 
@@ -96,7 +95,6 @@ extension View {
     }
 }
 
-@available(iOS 13.0, macOS 11.0, *)
 struct ExampleTabBarView_Previews: PreviewProvider {
     static var previews: some View {
         TopIndicatorTabBarView(selection: .constant(.home)) { _ in }
