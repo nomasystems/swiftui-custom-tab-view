@@ -115,8 +115,9 @@ struct _TabBarLayoutView<TabBarView: View, Subviews>: View where Subviews: Rando
                     .opacity(tabBarVisibility[selectedTabIndex] == .hidden ? 0 : 1)
                     .onPreferenceChange(TabBarBoundsForSafeAreaKey.self) {
                         if let anchor = $0 {
-                            tabBarHeight = proxy[anchor].height }
+                            tabBarHeight = proxy[anchor].height
                         }
+                    }
             })
         }
     }

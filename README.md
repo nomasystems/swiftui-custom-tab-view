@@ -44,14 +44,14 @@ This behavior distinguishes CustomTabView from common custom tab view implementa
 Add this repository as a dependency in your [`Package.swift`](https://developer.apple.com/documentation/swift_packages/package):
 
 ```swift
-// swift-tools-version:5.0
+// swift-tools-version: 6.0
 
 import PackageDescription
 
 let package = Package(
     ...,
     dependencies: [
-        .package(url: "https://github.com/NicFontana/SwiftUI-CustomTabView.git", .upToNextMajor(from: "1.0.0"))
+        .package(url: "https://github.com/nomasystems/swiftui-custom-tab-view.git", .upToNextMajor(from: "2.0.0"))
     ],
     ...
 )
@@ -61,7 +61,7 @@ let package = Package(
 Select File \> Swift Packages \> Add Package Dependency, then enter the following URL:
 
 ```
-https://github.com/NicFontana/SwiftUI-CustomTabView.git
+https://github.com/nomasystems/swiftui-custom-tab-view.git
 ```
 
 For more details, see [Adding Package Dependencies to Your App](https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app).
@@ -72,6 +72,8 @@ To integrate CustomTabView into your project, follow these simple steps:
 
 #### 1. Create your custom tab bar:
 ```swift
+import CustomTabView
+
 enum Tab: String, Hashable, CaseIterable {
     case home, explore, favourites, other
 }
@@ -92,6 +94,7 @@ struct SampleTabBarView: View {
                     }
             }
         }
+        .anchorPreference(key: TabBarBoundsForSafeAreaKey.self, value: .bounds, transform: { $0 })
     }
 
     private func tabBarItem(for tab: Tab) -> some View {
@@ -148,18 +151,20 @@ struct CustomTabViewExampleApp: App {
 The order of the views **must** be reflected in the provided tab bar.
 
 #### 3. (Optional) Change the tab bar position
-You can change the tab bar position calling the `tabBarPosition(_:)` method on `CustomTabView`:
+You can change the tab bar position calling the `tabBarEdge(_:)` method on `CustomTabView`:
 
 ```swift
 CustomTabView(tabBarView: tabBarView, tabs: Tab.allCases, selection: selectedTab) {
     ...
 }
-.tabBarPosition(.edge(.bottom))
+.tabBarEdge(.bottom)
 ```
 
-Supported positions are:
-- `edge(Edge)`: to place the tab bar at one edge of the screen
-- `floating(Edge)`: to let the tab bar float above the content while staying at one edge of the screen
+#### Hiding the tab bar
+
+```swift
+.tabBarVisibility(.hidden)
+```
 
 ## Contributions and Issues
 
