@@ -1,7 +1,7 @@
 import SwiftUI
 
-public struct TabBarBoundsForSafeAreaKey: PreferenceKey {
-    public static var defaultValue: Anchor<CGRect>? { nil }
+public struct TabBarTopForSafeAreaKey: PreferenceKey {
+    public static var defaultValue: Anchor<CGPoint>? { nil }
 
     public static func reduce(
         value: inout Value,

@@ -94,7 +94,7 @@ struct SampleTabBarView: View {
                     }
             }
         }
-        .anchorPreference(key: TabBarBoundsForSafeAreaKey.self, value: .bounds, transform: { $0 })
+        .anchorPreference(key: TabBarTopForSafeAreaKey.self, value: .top, transform: { $0 })
     }
 
     private func tabBarItem(for tab: Tab) -> some View {

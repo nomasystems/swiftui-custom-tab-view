@@ -31,7 +31,7 @@ struct BottomFloatingTabBarView: View {
         }
         #endif
         .clipShape(RoundedRectangle(cornerRadius: 25))
-        .anchorPreference(key: TabBarBoundsForSafeAreaKey.self, value: .bounds, transform: { $0 })
+        .anchorPreference(key: TabBarTopForSafeAreaKey.self, value: .top, transform: { $0 })
         .shadow(color: .secondary.opacity(0.3), radius: 10, y: 5)
     }
     
