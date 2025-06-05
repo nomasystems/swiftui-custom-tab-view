@@ -37,14 +37,14 @@ struct ExampleView: View {
             NavigationView {
                 List {
                     ForEach((0..<20).map { $0 }, id: \.self) { item in
+                        let hidesTabBar = item == 0
                         NavigationLink(
-                            destination: ZStack {
-                                Color.red.ignoresSafeArea(.all)
-                                Text("Destination \(item)")
-                                    .tabBarVisibility(.hidden)
-                            }
+                            destination: destination(
+                                item: item,
+                                tabBarVisibility: hidesTabBar ? .hidden : .visible
+                            )
                         ) {
-                            Text("Go to \(item)")
+                            Text("Go to \(item)" + (hidesTabBar ? " (hides tab bar)" : ""))
                         }
                     }
                 }
@@ -75,6 +75,28 @@ struct ExampleView: View {
         .tabBarEdge(.bottom)
         .navigationViewStyle(.stack)
         #endif
+    }
+
+    @ViewBuilder private func destination(
+        item: Int,
+        tabBarVisibility: TabBarVisibility
+    ) -> some View {
+        NavigationLink(
+            destination: nestedDestination()
+        ) {
+            ZStack {
+                Color.red.ignoresSafeArea(.all)
+                Text("Destination \(item)")
+            }
+            .tabBarVisibility(tabBarVisibility)
+        }
+    }
+
+    @ViewBuilder private func nestedDestination() -> some View {
+        ZStack {
+            Color.red.ignoresSafeArea(.all)
+            Text("Nested destination")
+        }
     }
 }
 

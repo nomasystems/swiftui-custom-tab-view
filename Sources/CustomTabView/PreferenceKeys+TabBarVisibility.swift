@@ -15,7 +15,11 @@ struct TabBarVisibilityKey: PreferenceKey {
     static var defaultValue: TabBarVisibility { .visible }
 
     static func reduce(value: inout TabBarVisibility, nextValue: () -> TabBarVisibility) {
-        value = nextValue()
+        value = switch (value, nextValue()) {
+        case (.visible, .hidden): .hidden
+        case (.hidden, .visible): .hidden
+        case (_, let newValue): newValue
+        }
     }
 }
 
