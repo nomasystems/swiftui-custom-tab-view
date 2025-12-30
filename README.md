@@ -51,7 +51,7 @@ import PackageDescription
 let package = Package(
     ...,
     dependencies: [
-        .package(url: "https://github.com/nomasystems/swiftui-custom-tab-view.git", .upToNextMajor(from: "2.0.0"))
+        .package(url: "https://github.com/nomasystems/swiftui-custom-tab-view.git", .upToNextMajor(from: "4.0.0"))
     ],
     ...
 )
@@ -113,7 +113,7 @@ struct CustomTabViewExampleApp: App {
 
     @State private var selectedTab: Tab = .home
 
-    private var tabBarView: SampleTabBarView {
+    private func tabBarView(geometry: GeometryProxy) -> SampleTabBarView {
         SampleTabBarView(selection: $selectedTab) { tab in
             print("Enjoying a custom TabView")
         }
@@ -121,7 +121,7 @@ struct CustomTabViewExampleApp: App {
 
     var body: some Scene {
         WindowGroup {
-            CustomTabView(tabBarView: tabBarView, tabs: Tab.allCases, selection: selectedTab) {
+            CustomTabView(tabBarView: tabBarView(geometry:), tabs: Tab.allCases, selection: selectedTab) {
                 NavigationView {
                     Text("Home")
                         .navigationBarTitle("Home")

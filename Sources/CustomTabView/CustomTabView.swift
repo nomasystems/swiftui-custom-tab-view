@@ -15,7 +15,7 @@ import SwiftUI
 /// @State private var selection: String = "Tab1"
 ///
 /// CustomTabView(
-///    tabBarView: MyCustomTabBar(selection: $selection),
+///    tabBarView: { geometry in MyCustomTabBar(selection: $selection) },
 ///    tabs: ["Tab1", "Tab2", "Tab3"],
 ///    selection: selection
 /// ) {
@@ -29,7 +29,7 @@ import SwiftUI
 /// ```
 /// 
 /// - Parameters:
-///   - tabBarView: The custom view that will serve as the tab bar.
+///   - tabBarView: A function that returns a view that will serve as the tab bar. The geometry will be that of the entire tab bar container, and can be used to customize the tab bar based on, for example, the current safe area insets.
 ///   - tabs: An array of values conforming to `Hashable` that represent the tabs. The order of tabs in this array **must** be reflected in the TabBar view provided.
 ///   - selection: The currently selected tab.
 ///   - content: A closure that provides the content for each tab. The order and number of elements in the closure **must** match the `tabs` parameter.
@@ -40,12 +40,12 @@ public struct CustomTabView<SelectionValue: Hashable, TabBarView: View, Content:
     private let tabIndices: [SelectionValue: Int]
     
     // TabBar
-    let tabBarView: TabBarView
-    
+    let tabBarView: (GeometryProxy) -> TabBarView
+
     // Content
     let content: Content
     
-    public init(tabBarView: TabBarView, tabs: [SelectionValue], selection: SelectionValue, @ViewBuilder content: () -> Content) {
+    public init(tabBarView: @escaping (GeometryProxy) -> TabBarView, tabs: [SelectionValue], selection: SelectionValue, @ViewBuilder content: () -> Content) {
         self.tabBarView = tabBarView
         self.selection = selection
         self.content = content()
@@ -80,7 +80,7 @@ public struct CustomTabView<SelectionValue: Hashable, TabBarView: View, Content:
 }
 
 private struct _VariadicViewLayout<TabBarView: View>: _VariadicView_UnaryViewRoot {
-    let tabBarView: TabBarView
+    let tabBarView: (GeometryProxy) -> TabBarView
     let selectedTabIndex: Int
     
     @ViewBuilder
@@ -96,7 +96,7 @@ struct _TabBarLayoutView<TabBarView: View, Subviews>: View where Subviews: Rando
     @State private var tabBarVisibility: [Int: TabBarVisibility] = [:]
     @State private var tabBarHeight: CGFloat = 0
 
-    let tabBarView: TabBarView
+    let tabBarView: (GeometryProxy) -> TabBarView
     let selectedTabIndex: Int
     let subviews: Subviews
 
@@ -111,7 +111,7 @@ struct _TabBarLayoutView<TabBarView: View, Subviews>: View where Subviews: Rando
                 #if canImport(UIKit)
                 .ignoresSafeArea(.all, edges: .vertical)
                 #endif
-                tabBarView
+                tabBarView(proxy)
                     .opacity(tabBarVisibility[selectedTabIndex] == .hidden ? 0 : 1)
                     .onPreferenceChange(TabBarTopForSafeAreaKey.self) {
                         if let anchor = $0 {
