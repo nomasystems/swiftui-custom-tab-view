@@ -41,7 +41,7 @@ struct ExampleView: View {
                         NavigationLink(
                             destination: destination(
                                 item: item,
-                                tabBarVisibility: hidesTabBar ? .hidden : .visible
+                                tabBarVisibility: hidesTabBar ? .hidden() : .visible()
                             )
                         ) {
                             Text("Go to \(item)" + (hidesTabBar ? " (hides tab bar)" : ""))
