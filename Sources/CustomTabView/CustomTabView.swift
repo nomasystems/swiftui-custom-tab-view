@@ -40,12 +40,12 @@ public struct CustomTabView<SelectionValue: Hashable, TabBarView: View, Content:
     private let tabIndices: [SelectionValue: Int]
     
     // TabBar
-    let tabBarView: (GeometryProxy) -> TabBarView
+    let tabBarView: (GeometryProxy, _ isHidden: Bool) -> TabBarView
 
     // Content
     let content: Content
     
-    public init(tabBarView: @escaping (GeometryProxy) -> TabBarView, tabs: [SelectionValue], selection: SelectionValue, @ViewBuilder content: () -> Content) {
+    public init(tabBarView: @escaping (GeometryProxy, _ isHidden: Bool) -> TabBarView, tabs: [SelectionValue], selection: SelectionValue, @ViewBuilder content: () -> Content) {
         self.tabBarView = tabBarView
         self.selection = selection
         self.content = content()
@@ -80,7 +80,7 @@ public struct CustomTabView<SelectionValue: Hashable, TabBarView: View, Content:
 }
 
 private struct _VariadicViewLayout<TabBarView: View>: _VariadicView_UnaryViewRoot {
-    let tabBarView: (GeometryProxy) -> TabBarView
+    let tabBarView: (GeometryProxy, _ isHidden: Bool) -> TabBarView
     let selectedTabIndex: Int
     
     @ViewBuilder
