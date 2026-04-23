@@ -10,14 +10,15 @@ import SwiftUI
 struct ExampleView: View {
     @State private var selectedTab: ExampleTab = .home
 
-    private func tabBarView(geometry: GeometryProxy) -> some View {
+    private func tabBarView(geometry: GeometryProxy, isHidden: Bool) -> some View {
         BottomFloatingTabBarView(selection: $selectedTab, onTabSelection: { tab in
             print("Maybe send some analytics here")
         })
+        .opacity(isHidden ? 0 : 1)
     }
 
     var body: some View {
-        CustomTabView(tabBarView: tabBarView(geometry:), tabs: ExampleTab.allCases, selection: selectedTab) {
+        CustomTabView(tabBarView: tabBarView(geometry:isHidden:), tabs: ExampleTab.allCases, selection: selectedTab) {
             #if os(iOS)
             NavigationView {
                 ScrollView {
