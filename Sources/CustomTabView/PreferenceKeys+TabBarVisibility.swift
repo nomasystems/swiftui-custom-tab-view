@@ -1,23 +1,8 @@
 import SwiftUI
 
-public enum TabBarVisibility: Equatable {
-    case visible(Animation? = nil)
-    case hidden(Animation? = nil)
-
-    var animation: Animation? {
-        switch self {
-        case .visible(let animation),
-                .hidden(let animation):
-            animation
-        }
-    }
-
-    var isVisible: Bool {
-        if case .visible = self {
-            return true
-        }
-        return false
-    }
+public enum TabBarVisibility {
+    case visible
+    case hidden
 }
 
 public extension View {
@@ -27,12 +12,12 @@ public extension View {
 }
 
 struct TabBarVisibilityKey: PreferenceKey {
-    static var defaultValue: TabBarVisibility { .visible() }
+    static var defaultValue: TabBarVisibility { .visible }
 
     static func reduce(value: inout TabBarVisibility, nextValue: () -> TabBarVisibility) {
         value = switch (value, nextValue()) {
-        case (.visible, .hidden(let animation)): .hidden(animation)
-        case (.hidden(let animation), .visible): .hidden(animation)
+        case (.visible, .hidden): .hidden
+        case (.hidden, .visible): .hidden
         case (_, let newValue): newValue
         }
     }

@@ -95,9 +95,8 @@ struct _TabBarLayoutView<TabBarView: View, Subviews>: View where Subviews: Rando
 
     @State private var tabBarVisibility: [Int: TabBarVisibility] = [:]
     @State private var tabBarHeight: CGFloat = 0
-    @State private var tabBarOpacity: CGFloat = 0
 
-    let tabBarView: (GeometryProxy) -> TabBarView
+    let tabBarView: (GeometryProxy, _ isHidden: Bool) -> TabBarView
     let selectedTabIndex: Int
     let subviews: Subviews
 
@@ -112,26 +111,13 @@ struct _TabBarLayoutView<TabBarView: View, Subviews>: View where Subviews: Rando
                 #if canImport(UIKit)
                 .ignoresSafeArea(.all, edges: .vertical)
                 #endif
-                tabBarView(proxy)
-                    .opacity(tabBarOpacity)
+                tabBarView(proxy, tabBarVisibility[selectedTabIndex] == .hidden)
                     .onPreferenceChange(TabBarTopForSafeAreaKey.self) {
                         if let anchor = $0 {
                             tabBarHeight = max(0, -(proxy[anchor].y - proxy.size.height))
                         }
                     }
             })
-        }
-        .onChange(of: tabBarVisibility) { newValue in
-            let tabBarVisibility = newValue[selectedTabIndex]
-            withAnimation(tabBarVisibility?.animation) {
-                tabBarOpacity = tabBarVisibility?.isVisible == true ? 1 : 0
-            }
-        }
-        .onChange(of: selectedTabIndex) { newValue in
-            let tabBarVisibility = tabBarVisibility[newValue]
-            withAnimation(tabBarVisibility?.animation) {
-                tabBarOpacity = tabBarVisibility?.isVisible == true ? 1 : 0
-            }
         }
     }
 

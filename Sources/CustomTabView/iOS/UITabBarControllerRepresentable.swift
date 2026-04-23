@@ -40,7 +40,7 @@ struct UITabBarControllerRepresentable<Subviews>: UIViewControllerRepresentable 
         tabBarController.viewControllers?.enumerated().forEach { index, vc in
             (vc as? UIHostingController)?.rootView = controlledViews[index]
                 .onPreferenceChange(TabBarVisibilityKey.self) { tabBarVisibility[index] = $0 }
-            let additionalSafeAreaInsets = tabBarVisibility[index]?.isVisible ?? false
+            let additionalSafeAreaInsets = tabBarVisibility[index] == .visible
                 ? additionalSafeAreaInsetsTabBarVisible
                 : self.additionalSafeAreaInsets
             vc.additionalSafeAreaInsets = .init(
