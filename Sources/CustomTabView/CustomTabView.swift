@@ -40,12 +40,12 @@ public struct CustomTabView<SelectionValue: Hashable, TabBarView: View, Content:
     private let tabIndices: [SelectionValue: Int]
     
     // TabBar
-    let tabBarView: (GeometryProxy) -> TabBarView
+    let tabBarView: (GeometryProxy, _ isHidden: Bool) -> TabBarView
 
     // Content
     let content: Content
     
-    public init(tabBarView: @escaping (GeometryProxy) -> TabBarView, tabs: [SelectionValue], selection: SelectionValue, @ViewBuilder content: () -> Content) {
+    public init(tabBarView: @escaping (GeometryProxy, _ isHidden: Bool) -> TabBarView, tabs: [SelectionValue], selection: SelectionValue, @ViewBuilder content: () -> Content) {
         self.tabBarView = tabBarView
         self.selection = selection
         self.content = content()
@@ -80,7 +80,7 @@ public struct CustomTabView<SelectionValue: Hashable, TabBarView: View, Content:
 }
 
 private struct _VariadicViewLayout<TabBarView: View>: _VariadicView_UnaryViewRoot {
-    let tabBarView: (GeometryProxy) -> TabBarView
+    let tabBarView: (GeometryProxy, _ isHidden: Bool) -> TabBarView
     let selectedTabIndex: Int
     
     @ViewBuilder
@@ -96,7 +96,7 @@ struct _TabBarLayoutView<TabBarView: View, Subviews>: View where Subviews: Rando
     @State private var tabBarVisibility: [Int: TabBarVisibility] = [:]
     @State private var tabBarHeight: CGFloat = 0
 
-    let tabBarView: (GeometryProxy) -> TabBarView
+    let tabBarView: (GeometryProxy, _ isHidden: Bool) -> TabBarView
     let selectedTabIndex: Int
     let subviews: Subviews
 
@@ -111,8 +111,7 @@ struct _TabBarLayoutView<TabBarView: View, Subviews>: View where Subviews: Rando
                 #if canImport(UIKit)
                 .ignoresSafeArea(.all, edges: .vertical)
                 #endif
-                tabBarView(proxy)
-                    .opacity(tabBarVisibility[selectedTabIndex] == .hidden ? 0 : 1)
+                tabBarView(proxy, tabBarVisibility[selectedTabIndex] == .hidden)
                     .onPreferenceChange(TabBarTopForSafeAreaKey.self) {
                         if let anchor = $0 {
                             tabBarHeight = max(0, -(proxy[anchor].y - proxy.size.height))
