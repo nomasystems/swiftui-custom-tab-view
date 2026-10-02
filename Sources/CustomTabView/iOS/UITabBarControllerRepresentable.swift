@@ -36,7 +36,9 @@ struct UITabBarControllerRepresentable<Subviews>: UIViewControllerRepresentable 
     }
     
     func updateUIViewController(_ tabBarController: UITabBarController, context: Context) {
-        tabBarController.selectedIndex = selectedTabIndex
+        if tabBarController.selectedIndex != selectedTabIndex {
+            tabBarController.selectedIndex = selectedTabIndex
+        }
         tabBarController.viewControllers?.enumerated().forEach { index, vc in
             (vc as? UIHostingController)?.rootView = controlledViews[index]
                 .onPreferenceChange(TabBarVisibilityKey.self) { tabBarVisibility[index] = $0 }
